@@ -45,24 +45,29 @@
         font-family: arial, sans-serif;
         border-collapse: collapse;
         width: 100%;
-        background-color: #dddddd;
-        color: black;
+        background-color: #000;
+        color: #fff;
       }
 
       td,
       th {
+        color: #fff;
         border: 1px solid #dddddd;
         text-align: left;
         padding: 8px;
-        border: 1px #000 solid;
+      
       }
 
-      tr:nth-child(even) {
-        background-color: #dddddd;
-      }
+      
       .detail-donhang {
         padding-right: 30px;
         border-right: 1px solid #000;
+      }
+      .single-price{
+        width: 20%;
+      }
+      .quantity{
+        width: 20%;
       }
     </style>
   </head>
@@ -171,6 +176,7 @@
             <th>state</th>
             <th>Address1</th>
             <th>Address2</th>
+            <th>Country</th>
           </tr>
      
 
@@ -178,6 +184,11 @@
 
 
 
+        </table>
+        <table class="table-product">
+          <th>Product</th>
+          <th class="quantity">Quantity</th>
+          <th class="single-price">Single price</th>
         </table>
       </div>
       <!-- Content End -->
@@ -214,9 +225,11 @@
         
 
          const table = document.querySelector('.table')
-       
+          const listProduct = document.querySelector('.table-product')
          const res = await fetch(` https://data-nail-hl-default-rtdb.firebaseio.com/customer/${id_item}.json`)
          const data = await res.json();
+         const cartItem = data.cartItems;
+         console.log(cartItem);
          if(data){
             table.innerHTML += `
             <tr>
@@ -226,12 +239,21 @@
             <td>${data.city}</td>
             <td>${data.phoneNumber}</td>
             <td>${data.companyName}</td>
-            <td>${data.ostalCode}</td>
+            <td>${data.postalCode}</td>
             <td>${data.state}</td>
             <td>${data.address1}</td>
             <td>${data.address2}</td>
+            <td>${data.country}</td>
           </tr>
             `
+          cartItem.map((t) =>{
+            listProduct.innerHTML += `
+            <td>${t.name} 
+              <p>${t.price}</p>
+            </td>
+            `
+          })
+
          }
       })()
       
