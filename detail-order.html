@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>DarkPan - Bootstrap 5 Admin Template</title>
+    <title>HL BEAUTY - Bootstrap 5 Admin Template</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
@@ -69,6 +69,35 @@
       .quantity{
         width: 20%;
       }
+      td h3{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      .info-customer{
+        background-color: rgb(0, 255, 38);
+        
+      }
+    
+      .info-customer td{
+        color: #000;
+        font-weight: 600;
+      }
+      .total{
+        height: 50px;
+      }
+      .title-total{
+        width: 70%;
+      }
+      .info-img{
+        display: flex;
+        justify-content:center ;
+      }
+      .total tr td{
+        text-align: center;
+        font-size: 35px;
+      }
+     
     </style>
   </head>
 
@@ -94,14 +123,14 @@
         <nav class="navbar bg-secondary navbar-dark">
           <a href="index.html" class="navbar-brand mx-4 mb-3">
             <h3 class="text-primary">
-              <i class="fa fa-user-edit me-2"></i>DarkPan
+              <i class="fa fa-user-edit me-2"></i>HL BEAUTY
             </h3>
           </a>
           <div class="d-flex align-items-center ms-4 mb-4">
             <div class="position-relative">
               <img
                 class="rounded-circle"
-                src="img/user.jpg"
+                src="img/logov3.webp"
                 alt=""
                 style="width: 40px; height: 40px"
               />
@@ -115,49 +144,15 @@
             </div>
           </div>
           <div class="navbar-nav w-100">
-            <a href="index.html" class="nav-item nav-link"
-              ><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a
-            >
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                ><i class="fa fa-laptop me-2"></i>Elements</a
-              >
-              <div class="dropdown-menu bg-transparent border-0">
-                <a href="button.html" class="dropdown-item">Buttons</a>
-                <a href="typography.html" class="dropdown-item">Typography</a>
-                <a href="element.html" class="dropdown-item">Other Elements</a>
-              </div>
-            </div>
-            <a href="widget.html" class="nav-item nav-link active"
-              ><i class="fa fa-th me-2"></i>Widgets</a
-            >
-            <a href="form.html" class="nav-item nav-link"
-              ><i class="fa fa-keyboard me-2"></i>Forms</a
-            >
-            <a href="table.html" class="nav-item nav-link"
-              ><i class="fa fa-table me-2"></i>Tables</a
-            >
-            <a href="chart.html" class="nav-item nav-link"
-              ><i class="fa fa-chart-bar me-2"></i>Charts</a
-            >
-            <div class="nav-item dropdown">
-              <a
-                href="#"
-                class="nav-link dropdown-toggle"
-                data-bs-toggle="dropdown"
-                ><i class="far fa-file-alt me-2"></i>Pages</a
-              >
-              <div class="dropdown-menu bg-transparent border-0">
-                <a href="signin.html" class="dropdown-item">Sign In</a>
-                <a href="signup.html" class="dropdown-item">Sign Up</a>
-                <a href="404.html" class="dropdown-item">404 Error</a>
-                <a href="blank.html" class="dropdown-item">Blank Page</a>
-              </div>
-            </div>
-          </div>
+            <a href="index.html" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+          
+            <a href="order.html" class="nav-item nav-link active"><i class="fa fa-th me-2"></i>Quản lý đơn Hàng</a>
+            <a href="product-for-nail.html" class="nav-item nav-link"><i class="fa fa-keyboard me-2"></i>Product For Nail</a>
+            <a href="services.html" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Services</a>
+            <a href="single.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Single Length tray</a>
+            <a href="premade.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Premade</a>
+            <a href="accsesories.html" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Assesories</a>
+        </div>
         </nav>
       </div>
       <!-- Sidebar End -->
@@ -177,6 +172,7 @@
             <th>Address1</th>
             <th>Address2</th>
             <th>Country</th>
+            <th>Status</th>
           </tr>
      
 
@@ -188,8 +184,14 @@
         <table class="table-product">
           <th>Product</th>
           <th class="quantity">Quantity</th>
-          <th class="single-price">Single price</th>
+          <th class="single-price">Price</th>
         </table>
+
+        <table class="total">
+         
+
+        </table>
+
       </div>
       <!-- Content End -->
 
@@ -223,7 +225,7 @@
         let params = new URLSearchParams(location.search);
         let id_item = params.get('id')
         
-
+        const total = document.querySelector('.total')
          const table = document.querySelector('.table')
           const listProduct = document.querySelector('.table-product')
          const res = await fetch(` https://data-nail-hl-default-rtdb.firebaseio.com/customer/${id_item}.json`)
@@ -232,7 +234,7 @@
          console.log(cartItem);
          if(data){
             table.innerHTML += `
-            <tr>
+            <tr class='info-customer'>
             
             <td>${data.firstName}</td>
             <td>${data.lastName}</td>
@@ -244,15 +246,41 @@
             <td>${data.address1}</td>
             <td>${data.address2}</td>
             <td>${data.country}</td>
+            <td>${data.status}</td>
           </tr>
             `
           cartItem.map((t) =>{
             listProduct.innerHTML += `
-            <td>${t.name} 
-              <p>${t.price}</p>
+            <td>
+              <div class="row">
+                <div class='info col-6'>
+                  <p>Name product :  ${t.name} </p> 
+              <p>Single price : ${t.Singleprice} CAD</p>
+              <p>Length : ${t.length} CAD</p>
+              <p>Diameter : ${t.diameter} CAD</p>
+              <p>CurlType : ${t.curlType} CAD</p>
+                </div>
+                <div class='info-img col-6'>
+                  <img src='${t.img1}' width='50%' />
+                </div>
+              </div>
+             
+            </td>
+            <td>
+              <h3>${t.quantity}</h3>
+            </td>
+            <td>
+              <h3>${t.price} </h3>
             </td>
             `
           })
+         
+          total.innerHTML += `
+          <tr>
+              <td class="title-total">Total</td>
+              <td>${data.total} CAD</td>
+            </tr>
+          `
 
          }
       })()

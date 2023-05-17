@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>DarkPan - Bootstrap 5 Admin Template</title>
+    <title>HL BEAUTY - Bootstrap 5 Admin Template</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta content="" name="keywords" />
     <meta content="" name="description" />
@@ -54,15 +54,18 @@
         border: 1px solid #dddddd;
         text-align: left;
         padding: 8px;
-       
       }
 
-      tr:nth-child(even) {
-        background-color: #dddddd;
-      }
       .detail-donhang {
         padding-right: 30px;
         border-right: 1px solid #000;
+      }
+      input:disabled {
+        background-color: rgb(60, 255, 0);
+        color: #000;
+      }
+      .img {
+        width: 70%;
       }
     </style>
   </head>
@@ -89,7 +92,7 @@
         <nav class="navbar bg-secondary navbar-dark">
           <a href="index.html" class="navbar-brand mx-4 mb-3">
             <h3 class="text-primary">
-              <i class="fa fa-user-edit me-2"></i>DarkPan
+              <i class="fa fa-user-edit me-2"></i>HL BEAUTY
             </h3>
           </a>
           <div class="d-flex align-items-center ms-4 mb-4">
@@ -113,7 +116,7 @@
             <a href="index.html" class="nav-item nav-link"
               ><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a
             >
-       
+
             <a href="widget.html" class="nav-item nav-link active"
               ><i class="fa fa-th me-2"></i>Order Management</a
             >
@@ -149,10 +152,7 @@
       <div class="content">
         <table class="tbody">
           <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>City</th>
-            <th>Phone</th>
+            <th class="img">Image Slider</th>
             <th>Active</th>
           </tr>
 
@@ -182,62 +182,223 @@
 
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
-    <script>
-      const getData = async () => {
-        const tbody = document.querySelector(".tbody");
+    <!-- <script>
+      // Lấy thẻ input file
+      const fileInputs = document.querySelectorAll('input[type="file"]');
+
+      // Lặp qua từng input file
+      fileInputs.forEach((fileInput, index) => {
+        // Lắng nghe sự kiện khi có tệp được chọn
+        fileInput.addEventListener("change", async (event) => {
+          const file = event.target.files[0];
+
+          // Kiểm tra xem tệp có tồn tại hay không
+          if (file) {
+            // Đọc tệp dưới dạng base64
+            const base64Data = await readFileAsBase64(file);
+
+            // Cập nhật đường dẫn ảnh trong database
+            updateImageURL(index + 1, base64Data);
+          }
+        });
+      });
+
+      // Hàm đọc tệp dưới dạng base64
+      function readFileAsBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+
+          reader.onload = () => {
+            resolve(reader.result);
+          };
+
+          reader.onerror = reject;
+
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Hàm cập nhật đường dẫn ảnh trong database
+      async function updateImageURL(imageIndex, base64Data) {
         const res = await fetch(
-          `https://data-nail-hl-default-rtdb.firebaseio.com/customer.json`
+          `https://data-nail-hl-default-rtdb.firebaseio.com/home/0.json`
         );
         const data = await res.json();
 
-        if (data) {
-          const firebaseKeys = Object.keys(data); // Store Firebase keys in an array
-          firebaseKeys.forEach((firebaseKey) => {
-            const t = data[firebaseKey];
-            tbody.innerHTML += `
-        <tr id="row-${firebaseKey}">
-          <td>${firebaseKey}</td>
-          <td>${t.lastName}</td>
-          <td>${t.country}</td>
-          <td>${t.phoneNumber}</td>
-          <td>
-            <a class="detail-donhang" href="detail.html?id=${firebaseKey}">Xem chi tiết</a>
-            <button onclick="deleItem('row-${firebaseKey}', '${firebaseKey}')">Xoá đơn hàng</button>
-          </td>
-        </tr>
-      `;
-          });
-        }
-      };
-  
+        // Cập nhật đường dẫn ảnh tương ứng
+        data[`img${imageIndex}`] = base64Data;
 
-      const deleItem = (rowId, firebaseKey) => {
-        const confirmation = confirm("Bạn có chắc chắn muốn xoá hay không ?");
-        if (confirmation) {
-          fetch(
-            `https://data-nail-hl-default-rtdb.firebaseio.com/customer/${firebaseKey}.json`,
-            {
-              method: "DELETE",
-            }
-          )
-            .then((response) => {
-              if (response.ok) {
-                console.log("Xóa thành công");
-                document.getElementById(rowId).remove();
-              } else {
-                console.log("Xóa thất bại");
-              }
-            })
-            .catch((error) => {
-              console.log("Lỗi:", error);
-            });
-        }
-      };
-      getData()
-   
+        // Gửi yêu cầu cập nhật đường dẫn ảnh trong database
+        await fetch(
+          `https://data-nail-hl-default-rtdb.firebaseio.com/home/0.json`,
+          {
+            method: "PUT",
+            body: JSON.stringify(data),
+          }
+        );
+      }
+      (async () => {
+        const table = document.querySelector(".tbody");
+        const res = await fetch(
+          `https://data-nail-hl-default-rtdb.firebaseio.com/home/0.json`
+        );
+
+        const data = await res.json();
+
+        table.innerHTML += `
+     <tr>
+         <td>  
+           <img src="${data.img1}" alt="" width="100%" >
+         </td>
+         <td>
+           <input type="file">
+          
+         </td>
+        
+       </tr>
+       <tr>
+         <td>  
+           <img src="${data.img2}" alt="" width="100%" >
+         </td>
+         <td>
+           <input type="file">
+          
+         </td>
+        
+       </tr>
+       <tr>
+         <td>  
+           <img src="${data.img3}" alt="" width="100%" >
+         </td>
+         <td>
+           <input type="file">
+          
+         </td>
+        
+       </tr>
+       <tr>
+         <td>  
+           <img src="${data.img4}" alt="" width="100%" >
+         </td>
+         <td>
+           <input type="file">
+          
+         </td>
+        
+       </tr>
+       <tr>
+         <td>  
+           <img src="${data.img5}" alt="" width="100%" >
+         </td>
+         <td>
+           <input type="file">
+          
+         </td>
+        
+       </tr>
+     `;
+      })();
+    </script> -->
+    <script>
+      // Lấy thẻ input file
+const fileInputs = document.querySelectorAll('input[type="file"]');
+
+// Lặp qua từng input file
+fileInputs.forEach((fileInput, index) => {
+  // Lắng nghe sự kiện khi có tệp được chọn
+  fileInput.addEventListener('change', async (event) => {
+    const file = event.target.files[0];
+
+    // Kiểm tra xem tệp có tồn tại hay không
+    if (file) {
+      // Đọc tệp dưới dạng base64
+      const base64Data = await readFileAsBase64(file);
+
+      // Cập nhật đường dẫn ảnh trong database
+      updateImageURL(index + 1, base64Data);
+    }
+  });
+});
+
+// Hàm đọc tệp dưới dạng base64
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result);
+    };
+
+    reader.onerror = reject;
+
+    reader.readAsDataURL(file);
+  });
+}
+
+// Hàm cập nhật đường dẫn ảnh trong database
+async function updateImageURL(imageIndex, base64Data) {
+  const res = await fetch('https://data-nail-hl-default-rtdb.firebaseio.com/home/0.json');
+  const data = await res.json();
+
+  // Cập nhật đường dẫn ảnh tương ứng
+  data[`img${imageIndex}`] = base64Data;
+
+  // Gửi yêu cầu cập nhật đường dẫn ảnh trong database
+  await fetch('https://data-nail-hl-default-rtdb.firebaseio.com/home/0.json', {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+}
+
+(async () => {
+  const table = document.querySelector('.tbody');
+  const res = await fetch('https://data-nail-hl-default-rtdb.firebaseio.com/home/0.json');
+  const data = await res.json();
+
+  table.innerHTML += `
+    <tr>
+      <td>
+        <img src="${data.img1}" alt="" width="100%">
+      </td>
+      <td>
+        <input type="file">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="${data.img2}" alt="" width="100%">
+      </td>
+      <td>
+        <input type="file">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="${data.img3}" alt="" width="100%">
+      </td>
+      <td>
+        <input type="file">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="${data.img4}" alt="" width="100%">
+      </td>
+      <td>
+        <input type="file">
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <img src="${data.img5}" alt="" width="100%">
+      </td>
+      <td>
+        <input type="file">
+      </td>
+    </tr>
+  `;
+})();
+
     </script>
-
-
-    
   </body>
 </html>
